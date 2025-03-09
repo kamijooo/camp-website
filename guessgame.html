@@ -2,60 +2,231 @@
 <html lang="ja">
 <head>
   <title>数当てゲーム</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
   <style>
-    #guessGame {
-      margin: 20px;
+    /* グローバルなフォント設定 */
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f9f9f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      flex-direction: column;
+      color: #333;
     }
 
-    #guessGame input {
-      width: 200px;
+    /* ヘッダーのデザイン */
+    #header {
+      text-align: center;
+      padding: 60px 0;  /* ヘッダーの上部と下部に余白 */
+      background-color: #4CAF50;
+      width: 100%;
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+      border-bottom: 4px solid #388E3C;
+      overflow: hidden;
+      height: 350px; /* ヘッダーの高さを調整 */
+    }
+
+    #header img {
+      width: auto;
+      height: 220px; /* 画像の高さを固定 */
+      animation: resizeImage 5s ease-in-out infinite;
+      object-fit: contain;
+    }
+
+    /* 画像の拡大縮小アニメーション */
+    @keyframes resizeImage {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.1);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    /* ゲームセクション */
+    #guessGame {
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      width: 360px;
+      text-align: center;
+      margin-top: -60px;
+      border-top: 6px solid #4CAF50;
+    }
+
+    #guessGame input[type="number"],
+    #guessGame input[type="submit"],
+    #guessGame button {
+      width: 100%;
+      padding: 12px;
+      margin: 12px 0;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    /* インタラクティブな効果 */
+    #guessGame input[type="number"]:focus,
+    #guessGame input[type="submit"]:hover,
+    #guessGame button:hover {
+      border-color: #4CAF50;
+      background-color: #e8f5e9;
+    }
+
+    /* ゲームの結果表示 */
+    #guessResult {
+      margin: 20px 0;
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    /* 画像表示 */
+    #computerImage {
+      display: none;
+      width: 100px;
+      margin-top: 20px;
+    }
+
+    /* 試行回数表示 */
+    #attempts {
+      font-size: 18px;
+      margin-top: 20px;
+      color: #333;
+    }
+
+    /* ボタンのスタイル */
+    button {
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:disabled {
+      background-color: #ccc;
+    }
+
+    /* レスポンシブデザイン */
+    @media (max-width: 600px) {
+      #guessGame {
+        width: 90%;
+        padding: 20px;
+      }
+
+      #header img {
+        width: 180px;
+        height: auto;
+      }
     }
   </style>
 </head>
 <body>
 
+<!-- ヘッダーに画像 -->
+<div id="header">
+  <img id="headerImage" src="123.png" alt="ヘッダー画像">
+</div>
+
 <main class="container">
-  <h1>数当てゲーム (1~100)</h1>
-  
+  <h1>数当てゲーム</h1>
+
+  <!-- ゲームのバージョン選択 -->
+  <div id="gameSelector">
+    <label for="gameSelect">ゲームバージョンを選択: </label>
+    <select id="gameSelect">
+      <option value="100">1~100</option>
+      <option value="20">1~20</option>
+    </select>
+  </div>
+
   <div id="guessGame">
     <label for="guessField">予想: </label>
     <input type="number" min="1" max="100" id="guessField">
     <input type="submit" value="予想を入力" id="guessSubmit">
     <p id="guessResult"></p>
+    <img id="computerImage" src="circle-3.png" alt="笑顔のコンピューター">
+    <button id="resetButton">リセット</button>
+    <p id="attempts">残り試行回数: <span id="attemptsLeft">5</span></p>
   </div>
 </main>
 
 <script>
-  // 1から20までのランダムな整数を生成し、コンソールにログを出力
-  let answerNumber = Math.floor(Math.random() * 100) + 1;
-  console.log('正解は' + answerNumber);
-
-  // 数値入力フィールドを取得
+  let answerNumber;
   let guessField = document.querySelector('#guessField');
-
-  // submitボタンを取得
   let guessSubmit = document.querySelector('#guessSubmit');
-
-  // 結果を表示する要素を取得
   let guessResult = document.querySelector('#guessResult');
+  let computerImage = document.querySelector('#computerImage');
+  let resetButton = document.querySelector('#resetButton');
+  let gameSelect = document.querySelector('#gameSelect');
+  let attemptsLeftElement = document.querySelector('#attemptsLeft');
+  let attempts = 5;
 
-  // ユーザーの入力をチェックし、結果を表示
+  // 初期化関数
+  function initializeGame() {
+    // ゲームのバージョンに応じて範囲を変更
+    let maxNumber = gameSelect.value === "100" ? 100 : 20;
+    answerNumber = Math.floor(Math.random() * maxNumber) + 1; // 新しいランダムな数字を生成
+    console.log('正解は' + answerNumber);
+
+    // 入力フィールドの最大値を変更
+    guessField.setAttribute('max', maxNumber);
+    
+    // ゲームの状態をリセット
+    guessResult.textContent = '';
+    guessField.value = '';
+    computerImage.style.display = 'none'; // 画像を非表示
+    attempts = 5;
+    attemptsLeftElement.textContent = attempts;
+    guessSubmit.disabled = false; // 予想ボタンを有効にする
+  }
+
+  // ユーザーの予想をチェック
   function checkGuess() {
-    // ユーザの入力した値を取得
     let userGuess = Number(guessField.value);
 
-    if (userGuess === answerNumber) { // ユーザの入力が正解
+    if (userGuess === answerNumber) {
       guessResult.textContent = '正解です！';
-    } else if (userGuess < answerNumber) { // ユーザの入力が正解より小さい
+      computerImage.style.display = 'block'; // 正解時に画像を表示
+      guessSubmit.disabled = true; // 予想ボタンを無効にする
+    } else if (userGuess < answerNumber) {
       guessResult.textContent = 'もっと大きいです';
-    } else if (userGuess > answerNumber) { // ユーザの入力が正解より大きい
+    } else if (userGuess > answerNumber) {
       guessResult.textContent = 'もっと小さいです';
+    }
+
+    // 試行回数を減らす
+    attempts--;
+    attemptsLeftElement.textContent = attempts;
+
+    // 試行回数が0になった場合、ゲームオーバー
+    if (attempts <= 0) {
+      guessResult.textContent = 'ゲームオーバー！正解は ' + answerNumber + ' でした';
+      guessSubmit.disabled = true; // 予想ボタンを無効にする
     }
   }
 
-  // submitがクリックされたときに、checkGuess関数を呼び出す
+  // 予想ボタンがクリックされたときに実行
   guessSubmit.addEventListener('click', checkGuess);
+
+  // リセットボタンがクリックされたときに実行
+  resetButton.addEventListener('click', initializeGame);
+
+  // ゲームのバージョンが変更されたときに初期化
+  gameSelect.addEventListener('change', initializeGame);
+
+  // ページロード時にゲームを初期化
+  window.onload = initializeGame;
 </script>
 
 </body>

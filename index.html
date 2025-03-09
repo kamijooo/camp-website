@@ -1,22 +1,134 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <title>Example Website</title>
+  <title>自己紹介 | Kamijo</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" >
   <style>
+    /* ベージュを基調としたデザイン */
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f8f1e4;  /* ベージュ系の背景色 */
+      color: #4e3b31;  /* 深い茶色の文字色 */
+      margin: 0;
+      padding: 0;
+    }
+
+    /* メインコンテナ */
+    main.container {
+      max-width: 960px;
+      margin: 50px auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* ヘッダーのデザイン */
+    h1 {
+      font-size: 2.5em;
+      text-align: center;
+      color: #d66f4c;  /* 落ち着いたオレンジ色 */
+    }
+
+    /* 画像のスタイル */
+    #profileImage {
+      display: block;
+      margin: 0 auto 20px auto;
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    /* 自己紹介文 */
+    p {
+      font-size: 1.2em;
+      line-height: 1.6;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    /* リストのスタイル */
+    ul {
+      list-style-type: none;
+      padding: 0;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    ul li {
+      margin: 0 15px;
+    }
+
+    /* リンクのスタイル */
+    ul li a {
+      font-size: 1.1em;
+      color: #4e3b31;
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      background-color: #f1d8a6;
+      transition: background-color 0.3s;
+    }
+
+    ul li a:hover {
+      background-color: #d66f4c; /* ホバー時にオレンジ色 */
+      color: white;
+    }
+
+    /* フッターのスタイル */
+    footer {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 0.9em;
+      color: #a87d6d;
+    }
+
+    /* レスポンシブ対応 */
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2em;
+      }
+
+      #profileImage {
+        width: 120px;
+        height: 120px;
+      }
+
+      ul {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      ul li {
+        margin-bottom: 10px;
+      }
+    }
   </style>
 </head>
 <body>
+
   <main class="container">
-    <h1>Example Website</h1>
-    <p>これはウェブサイトです。</p>
+    <h1>Kamijoの自己紹介</h1>
+
+    <!-- プロフィール画像 -->
+    <img id="profileImage" src="kamijo.png" alt="Kamijoの画像">
+
+    <!-- 自己紹介文 -->
+    <p>こんにちは、Kamijoです！私はウェブ開発者で、ウェブデザインに興味があります。</p>
     
+    <!-- リンク -->
     <ul>
       <li><a href="https://www.google.com/">Google</a></li>
-      <li><a href="https://www.yahoo.co.jp/">Yahoo! JAPAN</a></li>
+      <li><a href="https://www.github.com/">GitHub</a></li>
+      <li><a href="https://twitter.com/">Twitter</a></li>
     </ul>
-    
-    <img src="computer01_smile.png" alt="笑顔のコンピューター">
   </main>
+
+  <footer>
+    <p>© 2025 Kamijo | 自己紹介サイト</p>
+  </footer>
+
 </body>
 </html>
