@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>今日の運勢占い</title>
-  <!-- Google Fonts から可愛いフォントをインポート -->
   <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     /* 背景画像設定 */
@@ -112,12 +111,12 @@
     }
 
     /* 入力フィールド */
-    .input-container, .select-container {
+    .input-container {
       margin-bottom: 20px;
       animation: fadeIn 1s ease-out;
     }
 
-    input, select {
+    input {
       padding: 12px;
       font-size: 1rem;
       margin: 10px 0;
@@ -127,6 +126,22 @@
       max-width: 300px;
       background-color: rgba(0, 0, 0, 0.5); /* 入力フィールド背景を暗くする */
       color: #fff; /* 入力文字色を白に */
+    }
+
+    /* 星座選択 */
+    .seiza-container {
+      margin-bottom: 20px;
+    }
+
+    select {
+      padding: 12px;
+      font-size: 1rem;
+      background-color: rgba(0, 0, 0, 0.5);
+      color: #fff;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      width: 80%;
+      max-width: 300px;
     }
 
     /* アニメーション */
@@ -179,7 +194,7 @@
         font-size: 2.5rem;
       }
 
-      .input-container, .select-container {
+      .input-container {
         width: 100%;
         max-width: 300px;
       }
@@ -201,10 +216,10 @@
     <input type="text" id="nameInput" placeholder="名前を入力" />
   </div>
 
-  <!-- 星座選択フォーム -->
-  <div class="select-container" id="zodiacContainer">
-    <label for="zodiacSelect">星座を選んでください：</label><br>
-    <select id="zodiacSelect">
+  <!-- 星座選択 -->
+  <div class="seiza-container">
+    <label for="seizaInput">あなたの星座を選んでください：</label><br>
+    <select id="seizaInput">
       <option value="おひつじ座">おひつじ座</option>
       <option value="おうし座">おうし座</option>
       <option value="ふたご座">ふたご座</option>
@@ -256,33 +271,39 @@
     const db = getFirestore(app);
 
     // 運勢を表示
-    function displayFortune(name, zodiac) {
-      const fortunes = {
-        "おひつじ座": "今日は新しいチャレンジに向いています！自信を持って進んで。",
-        "おうし座": "じっくり考えて行動することで、いい結果が得られます。",
-        "ふたご座": "コミュニケーションが鍵。周りとしっかり話し合いましょう。",
-        "かに座": "直感を信じて動くと、意外な発見があるかもしれません。",
-        "しし座": "自分を信じて、自分らしく行動する日です。",
-        "おとめ座": "計画を立てて慎重に動くと、着実に成果が出ます。",
-        "てんびん座": "柔軟な思考が大切。周りの意見を受け入れてみましょう。",
-        "さそり座": "深く考えず、まずは行動してみることが大事。",
-        "いて座": "積極的な行動がチャンスを引き寄せます。",
-        "やぎ座": "計画的に動くことで、目標に近づくことができます。",
-        "みずがめ座": "独自の考えが光る日。新しいアイデアに挑戦してみましょう。",
-        "うお座": "柔軟性を持つことで、人間関係が円滑になります。"
-      };
+    function displayFortune(name, seiza) {
+      // 12位から1位までの順位とメッセージ
+      const rankMessages = [
+        "運気最下位！今日は慎重に過ごし、無理をしないことが大切です。",
+        "運気は低迷気味。焦らずに冷静に行動しましょう。",
+        "あまり良い日ではありません。小さなミスに注意。",
+        "今日は少し運が悪い日。大きな決断は避けて、慎重に過ごしてください。",
+        "普通の日です。特別なこともなければ、大きな問題もないでしょう。",
+        "運気は平凡。大きな変化は期待できませんが、日々を大切に過ごしましょう。",
+        "少し良い日かもしれません。自分のペースで進んでみて。",
+        "悪いこともないが、良いこともあまりありません。安定を求める日。",
+        "少し良い運勢。前向きに行動することで、チャンスが広がりそう。",
+        "いい運勢が訪れる予感！ポジティブに行動すると、良い結果が得られるでしょう。",
+        "非常に良い日です！新しいことに挑戦して、運を味方につけましょう。",
+        "最上位！大吉！全てのことがうまくいく最高の一日です。自信を持って行動しましょう！"
+      ];
 
-      const resultText = `${name}さんの今日の運勢は、${fortunes[zodiac]}`;
+      // ランダムな順位を決定
+      const randomRank = Math.floor(Math.random() * 12); // 0~11 (0が12位、11が1位)
+
+      // 結果の文章
+      const resultText = `${name}さん（${seiza}）の今日の運勢は、${randomRank + 1}位です！\n\n${rankMessages[randomRank]}`;
+
+      // 結果を表示
       document.getElementById('fortuneResult').textContent = resultText;
-      document.getElementById('fortuneResult').style.display = 'block'; // 結果表示を表示
-      document.getElementById('loadingMessage').style.display = 'none'; // ローディング非表示
+      document.getElementById('fortuneResult').style.display = 'block';
+      document.getElementById('loadingMessage').style.display = 'none';
 
       // Firestoreに保存
-      saveToFirestore(name, zodiac);
+      saveToFirestore(name, seiza, randomRank + 1);
 
-      // 名前と星座選択部分を非表示にする
+      // 名前入力フォーム非表示
       document.getElementById('nameContainer').style.display = 'none';
-      document.getElementById('zodiacContainer').style.display = 'none';
       document.getElementById('submitBtn').style.display = 'none';
 
       // アクセス情報更新
@@ -290,11 +311,12 @@
     }
 
     // Firestoreに保存
-    async function saveToFirestore(name, zodiac) {
+    async function saveToFirestore(name, seiza, rank) {
       try {
         await addDoc(collection(db, "fortunes"), {
           name: name,
-          zodiac: zodiac,
+          seiza: seiza,
+          rank: rank,
           date: new Date()
         });
       } catch (e) {
@@ -321,23 +343,19 @@
     // ボタンクリック時
     document.getElementById('submitBtn').addEventListener('click', () => {
       const name = document.getElementById('nameInput').value;
-      const zodiac = document.getElementById('zodiacSelect').value;
+      const seiza = document.getElementById('seizaInput').value;
 
-      if (!name || !zodiac) {
-        alert("名前と星座を選択してください。");
+      if (!name || !seiza) {
+        alert("名前と星座を入力してください！");
         return;
       }
 
-      // ローディングメッセージを表示
+      // ローディングメッセージ表示
       document.getElementById('loadingMessage').style.display = 'block';
 
-      // 結果表示を非表示に
-      document.getElementById('fortuneResult').style.display = 'none';
-
-      // ローディング中のメッセージを3秒後に非表示にし結果を表示
-      setTimeout(() => displayFortune(name, zodiac), 3000);
+      // 運勢を表示
+      displayFortune(name, seiza);
     });
   </script>
-
 </body>
 </html>
