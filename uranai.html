@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>今日の運勢占い</title>
+  <!-- Google Fonts から可愛いフォントをインポート -->
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    /* 背景画像設定 */
+    body {
+      font-family: 'Quicksand', sans-serif;
+      color: #fff;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      position: relative;
+      background: url('seiza_12seizaset.png') no-repeat center center fixed; /* 背景画像 */
+      background-size: cover;
+      animation: slideBackground 30s linear infinite; /* 背景の横スクロール */
+    }
+
+    /* 背景のスライドアニメーション */
+    @keyframes slideBackground {
+      0% {
+        background-position: 0 0;
+      }
+      100% {
+        background-position: -100% 0;
+      }
+    }
+
+    /* 背景オーバーレイ（文字を見やすくするため） */
+    body::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4); /* 暗くして文字を目立たせる */
+      z-index: -1;
+    }
+
+    /* タイトル */
+    h1 {
+      font-size: 3rem;
+      font-family: 'Poppins', sans-serif;
+      color: #ff8cae;
+      text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
+      margin-bottom: 20px;
+      letter-spacing: 2px;
+      animation: fadeIn 1s ease-out;
+    }
+
+    /* 結果表示 */
+    .result {
+      font-size: 1.6rem;
+      margin-top: 20px;
+      font-weight: bold;
+      color: #ff8cae;
+      opacity: 0;
+      transform: translateY(50px);
+      animation: fadeInUp 0.8s forwards;
+      padding: 20px;
+      border-radius: 15px;
+      background: rgba(255, 255, 255, 0.9); /* 結果表示の背景 */
+      width: 90%;
+      max-width: 500px;
+      margin: 20px auto;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2); /* 豪華なシャドウ */
+      display: none; /* 最初は非表示 */
+      text-align: center;
+      border: 2px solid #ff8cae; /* 豪華な枠 */
+    }
+
+    /* 結果表示のアニメーション */
+    @keyframes fadeInUp {
+      0% {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ボタン */
+    button {
+      padding: 12px 25px;
+      font-size: 1.2rem;
+      background-color: #ff8cae; /* ピンク系 */
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+      transition: transform 0.2s ease, background-color 0.3s;
+      margin-top: 20px;
+    }
+
+    /* ボタンホバーアニメーション */
+    button:hover {
+      background-color: #ff66a1;
+      transform: scale(1.05);
+    }
+
+    /* 入力フィールド */
+    .input-container, .select-container {
+      margin-bottom: 20px;
+      animation: fadeIn 1s ease-out;
+    }
+
+    input, select {
+      padding: 12px;
+      font-size: 1rem;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      width: 80%;
+      max-width: 300px;
+      background-color: rgba(0, 0, 0, 0.5); /* 入力フィールド背景を暗くする */
+      color: #fff; /* 入力文字色を白に */
+    }
+
+    /* アニメーション */
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ローディング表示 */
+    .loading {
+      font-size: 2rem;
+      color: #fff;
+      margin-top: 20px;
+      animation: pulse 1.5s infinite;
+      display: none; /* 最初は非表示 */
+    }
+
+    @keyframes pulse {
+      0% {
+        opacity: 0.5;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0.5;
+      }
+    }
+
+    /* アクセス情報表示 */
+    .access-info {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #fff;
+      font-size: 1rem;
+      margin-top: 20px;
+    }
+
+    /* レスポンシブデザイン */
+    @media screen and (max-width: 768px) {
+      h1 {
+        font-size: 2.5rem;
+      }
+
+      .input-container, .select-container {
+        width: 100%;
+        max-width: 300px;
+      }
+
+      button {
+        width: 90%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- タイトル -->
+  <h1>今日の運勢占い</h1>
+
+  <!-- 名前入力フォーム -->
+  <div class="input-container" id="nameContainer">
+    <label for="nameInput">名前を入力してください：</label><br>
+    <input type="text" id="nameInput" placeholder="名前を入力" />
+  </div>
+
+  <!-- 星座選択フォーム -->
+  <div class="select-container" id="zodiacContainer">
+    <label for="zodiacSelect">星座を選んでください：</label><br>
+    <select id="zodiacSelect">
+      <option value="おひつじ座">おひつじ座</option>
+      <option value="おうし座">おうし座</option>
+      <option value="ふたご座">ふたご座</option>
+      <option value="かに座">かに座</option>
+      <option value="しし座">しし座</option>
+      <option value="おとめ座">おとめ座</option>
+      <option value="てんびん座">てんびん座</option>
+      <option value="さそり座">さそり座</option>
+      <option value="いて座">いて座</option>
+      <option value="やぎ座">やぎ座</option>
+      <option value="みずがめ座">みずがめ座</option>
+      <option value="うお座">うお座</option>
+    </select>
+  </div>
+
+  <!-- 占い実行ボタン -->
+  <button id="submitBtn">運勢を占う</button>
+
+  <!-- ローディングメッセージ -->
+  <div id="loadingMessage" class="loading">占い中...</div>
+
+  <!-- 結果表示 -->
+  <div class="result" id="fortuneResult"></div>
+
+  <!-- アクセス情報 -->
+  <div class="access-info">
+    <p>訪問回数: <span id="visitCount">0</span></p>
+    <p>最後の訪問: <span id="lastVisit">初回訪問</span></p>
+  </div>
+
+  <script type="module">
+    // Firebase SDKのインポート
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+
+    // Firebase設定
+    const firebaseConfig = {
+      apiKey: "AIzaSyDBNifoK9b_nF1qFiT71IsX9Nx6IqPu0ik",
+      authDomain: "kamijooosite1.firebaseapp.com",
+      projectId: "kamijooosite1",
+      storageBucket: "kamijooosite1.firebasestorage.app",
+      messagingSenderId: "82220243666",
+      appId: "1:82220243666:web:470aa083a6900cb9faeb0b",
+      measurementId: "G-4LZ0GXP435"
+    };
+
+    // Firebase初期化
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // 運勢を表示
+    function displayFortune(name, zodiac) {
+      const fortunes = {
+        "おひつじ座": "今日は新しいチャレンジに向いています！自信を持って進んで。",
+        "おうし座": "じっくり考えて行動することで、いい結果が得られます。",
+        "ふたご座": "コミュニケーションが鍵。周りとしっかり話し合いましょう。",
+        "かに座": "直感を信じて動くと、意外な発見があるかもしれません。",
+        "しし座": "自分を信じて、自分らしく行動する日です。",
+        "おとめ座": "計画を立てて慎重に動くと、着実に成果が出ます。",
+        "てんびん座": "柔軟な思考が大切。周りの意見を受け入れてみましょう。",
+        "さそり座": "深く考えず、まずは行動してみることが大事。",
+        "いて座": "積極的な行動がチャンスを引き寄せます。",
+        "やぎ座": "計画的に動くことで、目標に近づくことができます。",
+        "みずがめ座": "独自の考えが光る日。新しいアイデアに挑戦してみましょう。",
+        "うお座": "柔軟性を持つことで、人間関係が円滑になります。"
+      };
+
+      const resultText = `${name}さんの今日の運勢は、${fortunes[zodiac]}`;
+      document.getElementById('fortuneResult').textContent = resultText;
+      document.getElementById('fortuneResult').style.display = 'block'; // 結果表示を表示
+      document.getElementById('loadingMessage').style.display = 'none'; // ローディング非表示
+
+      // Firestoreに保存
+      saveToFirestore(name, zodiac);
+
+      // 名前と星座選択部分を非表示にする
+      document.getElementById('nameContainer').style.display = 'none';
+      document.getElementById('zodiacContainer').style.display = 'none';
+      document.getElementById('submitBtn').style.display = 'none';
+
+      // アクセス情報更新
+      updateAccessInfo();
+    }
+
+    // Firestoreに保存
+    async function saveToFirestore(name, zodiac) {
+      try {
+        await addDoc(collection(db, "fortunes"), {
+          name: name,
+          zodiac: zodiac,
+          date: new Date()
+        });
+      } catch (e) {
+        console.error("Error adding document: ", e);
+      }
+    }
+
+    // アクセス情報更新
+    function updateAccessInfo() {
+      let count = localStorage.getItem('visitCount') || 0;
+      let lastVisit = localStorage.getItem('lastVisit') || '初回訪問';
+
+      // 訪問回数更新
+      count++;
+      localStorage.setItem('visitCount', count);
+      document.getElementById('visitCount').textContent = count;
+
+      // 最後の訪問日時更新
+      const currentDate = new Date().toLocaleString();
+      localStorage.setItem('lastVisit', currentDate);
+      document.getElementById('lastVisit').textContent = currentDate;
+    }
+
+    // ボタンクリック時
+    document.getElementById('submitBtn').addEventListener('click', () => {
+      const name = document.getElementById('nameInput').value;
+      const zodiac = document.getElementById('zodiacSelect').value;
+
+      if (!name || !zodiac) {
+        alert("名前と星座を選択してください。");
+        return;
+      }
+
+      // ローディングメッセージを表示
+      document.getElementById('loadingMessage').style.display = 'block';
+
+      // 結果表示を非表示に
+      document.getElementById('fortuneResult').style.display = 'none';
+
+      // ローディング中のメッセージを3秒後に非表示にし結果を表示
+      setTimeout(() => displayFortune(name, zodiac), 3000);
+    });
+  </script>
+
+</body>
+</html>

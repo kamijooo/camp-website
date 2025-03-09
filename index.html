@@ -1,19 +1,18 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <title>開発記録| Kamijo</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" >
+  <title>開発記録 | Kamijo</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
   <style>
     /* ベージュを基調としたデザイン */
     body {
       font-family: 'Arial', sans-serif;
-      background-color: #f8f1e4;  /* ベージュ系の背景色 */
-      color: #4e3b31;  /* 深い茶色の文字色 */
+      background-color: #f8f1e4;
+      color: #4e3b31;
       margin: 0;
       padding: 0;
     }
 
-    /* メインコンテナ */
     main.container {
       max-width: 960px;
       margin: 50px auto;
@@ -23,14 +22,12 @@
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
 
-    /* ヘッダーのデザイン */
     h1 {
       font-size: 2.5em;
       text-align: center;
-      color: #d66f4c;  /* 落ち着いたオレンジ色 */
+      color: #d66f4c;
     }
 
-    /* 画像のスタイル */
     #profileImage {
       display: block;
       margin: 0 auto 20px auto;
@@ -40,7 +37,6 @@
       object-fit: cover;
     }
 
-    /* 自己紹介文 */
     p {
       font-size: 1.2em;
       line-height: 1.6;
@@ -48,7 +44,6 @@
       margin-bottom: 20px;
     }
 
-    /* リストのスタイル */
     ul {
       list-style-type: none;
       padding: 0;
@@ -61,7 +56,6 @@
       margin: 0 15px;
     }
 
-    /* リンクのスタイル */
     ul li a {
       font-size: 1.1em;
       color: #4e3b31;
@@ -73,11 +67,10 @@
     }
 
     ul li a:hover {
-      background-color: #d66f4c; /* ホバー時にオレンジ色 */
+      background-color: #d66f4c;
       color: white;
     }
 
-    /* フッターのスタイル */
     footer {
       text-align: center;
       margin-top: 30px;
@@ -85,7 +78,6 @@
       color: #a87d6d;
     }
 
-    /* レスポンシブ対応 */
     @media (max-width: 600px) {
       h1 {
         font-size: 2em;
@@ -105,26 +97,92 @@
         margin-bottom: 10px;
       }
     }
+
+    .section-title {
+      font-size: 1.8em;
+      color: #d66f4c;
+      margin-top: 40px;
+      text-align: center;
+    }
+
+    .content-section {
+      margin-top: 20px;
+      font-size: 1.1em;
+      text-align: center;
+    }
+
+    .contact-form input, .contact-form textarea {
+      padding: 10px;
+      width: 100%;
+      margin: 10px 0;
+      border: 1px solid #d66f4c;
+      border-radius: 5px;
+    }
+
+    .contact-form button {
+      background-color: #d66f4c;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .contact-form button:hover {
+      background-color: #4e3b31;
+    }
   </style>
 </head>
 <body>
 
   <main class="container">
     <h1>Kamijo開発記録</h1>
-
-    <!-- プロフィール画像 -->
     <img id="profileImage" src="kamijo.png" alt="Kamijoの画像">
 
-    <!-- 自己紹介文 -->
-    <p></p>
+    <p>こんにちは！Kamijoの開発記録へようこそ。</p>
     
+    <!-- 趣味セクション -->
+    <div class="content-section">
+      <h2 class="section-title">趣味</h2>
+      <p>私の趣味は読書、ゲーム、映画鑑賞です。最近ハマっているのは...</p>
+    </div>
+
+    <!-- グルメセクション -->
+    <div class="content-section">
+      <h2 class="section-title">グルメ巡り</h2>
+      <p>美味しい食べ物を探して街を巡っています。最近のお気に入りのお店は...</p>
+    </div>
+
+    <!-- YouTubeセクション -->
+    <div class="content-section">
+      <h2 class="section-title">YouTube</h2>
+      <p>おすすめのYouTubeチャンネルを紹介します。私が最近見ているものは...</p>
+      <iframe width="560" height="315" src="https://www.youtube.com/embed/bW7673ZjB8A" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+
+    <!-- 散歩セクション -->
+    <div class="content-section">
+      <h2 class="section-title">散歩</h2>
+      <p>地元でお気に入りの散歩コースがあります...</p>
+    </div>
+
+    <!-- 連絡フォーム -->
+    <div class="content-section">
+      <h2 class="section-title">お問い合わせ</h2>
+      <form class="contact-form">
+        <input type="email" placeholder="メールアドレス" required>
+        <textarea placeholder="メッセージ" required></textarea>
+        <button type="submit">送信</button>
+      </form>
+    </div>
+
     <!-- リンク -->
     <ul>
       <li><a href="https://www.google.com/">Google</a></li>
       <li><a href="https://www.github.com/">GitHub</a></li>
       <li><a href="https://twitter.com/">Twitter</a></li>
       <li><a href="file:///Users/tech-girls-camp01/Documents/GitHub/camp-website/guessgame.html">数当てゲーム</a></li>
-      <li><a href=https://kamijooo.github.io/camp-website/pokemon.html>ラッキーポケモンサイト</a></li>
+      <li><a href="https://kamijooo.github.io/camp-website/pokemon.html">ラッキーポケモンサイト</a></li>
     </ul>
   </main>
 
