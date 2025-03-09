@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>今日のポケモン</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+  
+  <!-- Google Fontsの追加 -->
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  
+  <style>
+    /* 全体のフォントを変更 */
+    body {
+      font-family: 'Press Start 2P', cursive;
+      background-color: #ffeb3b;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+      color: #333;
+    }
+
+    /* Pokemonコンテナのスタイル */
+    #pokemon {
+      width: 350px;
+      text-align: center;
+      margin-top: 20px;
+      background-color: #fff;
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: linear-gradient(135deg, #ff5722, #ff9800);
+    }
+
+    h1 {
+      font-family: 'Press Start 2P', cursive;
+      color: #fff;
+      text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+      font-size: 2em;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      font-size: 1.5em;
+      color: #fff;
+      margin-top: 10px;
+    }
+
+    #pokemonImage {
+      width: 120px;
+      height: 120px;
+      display: none;
+      margin-top: 20px;
+      border-radius: 10px;
+    }
+
+    #pokemonDescription {
+      font-size: 1.2em;
+      color: #555;
+      margin-top: 10px;
+      text-align: left;
+    }
+
+    #luckyButton {
+      margin-top: 20px;
+      padding: 14px 28px;
+      font-size: 1.3em;
+      background-color: #ff5722;
+      border: none;
+      color: white;
+      cursor: pointer;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: background-color 0.3s;
+    }
+
+    #luckyButton:hover {
+      background-color: #f44336;
+    }
+
+    /* モンスターボールのスタイル */
+    #pokeball {
+      width: 80px;
+      height: 80px;
+      background: url('ball.png') no-repeat center center;
+      background-size: contain;
+      margin: 0 auto;
+      position: relative;
+      display: inline-block;
+    }
+
+    /* ポケモンの名前と説明のスタイル */
+    .pokemon-info {
+      margin-top: 20px;
+    }
+
+  </style>
+</head>
+<body>
+
+<main class="container">
+  <h1>今日のポケモン</h1>
+  
+  <div id="pokemon">
+    <h2 id="pokemonName">ポケモンの名前</h2>
+    <div id="pokeball"></div> <!-- モンスターボール -->
+    <img id="pokemonImage" src="" alt="ポケモン画像">
+    <div id="pokemonDescription">ポケモンの説明</div>
+  </div>
+
+  <!-- 今日のラッキーポケモンボタン -->
+  <button id="luckyButton">今日のラッキーポケモンは？</button>
+</main>
+
+<script>
+  // ポケモンの名前を表示する要素を取得
+  let pokemonName = document.getElementById('pokemonName');
+
+  // ポケモンの画像を表示する要素を取得
+  let pokemonImage = document.getElementById('pokemonImage');
+
+  // ポケモンの説明を表示する要素を取得
+  let pokemonDescription = document.getElementById('pokemonDescription');
+
+  // モンスターボールの要素を取得
+  let pokeball = document.getElementById('pokeball');
+
+  // ラッキーポケモンボタンを取得
+  let luckyButton = document.getElementById('luckyButton');
+
+  // ボタンがクリックされたときの処理
+  luckyButton.addEventListener('click', function() {
+    // 初期状態でポケモンの情報を隠す
+    pokemonImage.style.display = 'none';
+    pokemonDescription.textContent = '';
+    pokemonName.textContent = '';
+    
+    // モンスターボールを表示
+    pokeball.style.display = 'inline-block';
+
+    // ランダムにポケモン画像を表示
+    let pokemonNumber = Math.floor(Math.random() * 898) + 1;
+
+    // PokéAPIからポケモンのデータを取得
+    fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonNumber}`)
+      .then(response => response.json())
+      .then(data => {
+        // モンスターボールを非表示にする
+        pokeball.style.display = 'none';
+
+        // ポケモンの名前と画像を設定
+        //pokemonName.textContent = data.name;
+        pokemonImage.src = data.sprites.front_default;
+        pokemonImage.style.display = 'block';  // 画像を表示
+
+        // 追加: ポケモンの種の詳細を取得
+        return fetch(data.species.url);
+      })
+      .then(response => response.json())
+      .then(data => {
+        // 日本語のポケモン名を取得
+        const japaneseName = data.names.find(entry => entry.language.name === "ja");
+        pokemonName.textContent = japaneseName ? japaneseName.name : data.name;
+
+        // ポケモンの説明を取得
+        const description = data.flavor_text_entries.find(entry => entry.language.name === "ja");
+        pokemonDescription.textContent = description ? description.flavor_text : "説明はありません。";
+      })
+      .catch(error => {
+        console.error(`エラーが発生しました: ${error}`);
+      });
+  });
+</script>
+
+</body>
+</html>
