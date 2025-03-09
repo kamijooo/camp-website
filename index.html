@@ -3,29 +3,56 @@
 <head>
   <title>開発記録 | Kamijo</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
   <style>
-    /* ベージュを基調としたデザイン */
+    /* ベージュ系の色を基調としたデザイン */
     body {
       font-family: 'Arial', sans-serif;
-      background-color: #f8f1e4;
+      background-color: #f8f1e4;  /* ベージュ背景 */
       color: #4e3b31;
       margin: 0;
       padding: 0;
+      overflow-x: hidden;
+      opacity: 0;  /* 初期状態で非表示 */
+      animation: fadeIn 1.5s forwards;  /* フェードインのアニメーション */
+    }
+
+    /* フェードインアニメーション */
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
     }
 
     main.container {
       max-width: 960px;
       margin: 50px auto;
       padding: 20px;
-      background-color: #fff;
+      background-color: #ffffff;  /* 白背景 */
       border-radius: 10px;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      opacity: 0;
+      animation: fadeInMain 1.5s 0.5s forwards; /* メインコンテンツのフェードイン */
+    }
+
+    /* メインコンテンツのフェードインアニメーション */
+    @keyframes fadeInMain {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
     }
 
     h1 {
       font-size: 2.5em;
       text-align: center;
-      color: #d66f4c;
+      color: #c69c6d;  /* ベージュのアクセント */
+      margin-bottom: 20px;
     }
 
     #profileImage {
@@ -44,36 +71,106 @@
       margin-bottom: 20px;
     }
 
+    /* リストのスタイル (サイトリンク) */
     ul {
       list-style-type: none;
       padding: 0;
-      margin-bottom: 20px;
+      margin-top: 30px;
       display: flex;
       justify-content: center;
+      flex-wrap: wrap;
+      background-color: #f1e1c6;  /* 淡いベージュ背景 */
+      padding: 20px;
+      border-radius: 10px;
+      opacity: 0;
+      animation: fadeInList 1.5s 1s forwards; /* サイトリンクのフェードイン */
+    }
+
+    /* サイトリンクのフェードインアニメーション */
+    @keyframes fadeInList {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
     }
 
     ul li {
-      margin: 0 15px;
+      margin: 10px;
     }
 
     ul li a {
       font-size: 1.1em;
-      color: #4e3b31;
+      color: #ffffff;
       text-decoration: none;
-      padding: 10px 20px;
+      padding: 12px 30px;
       border-radius: 5px;
-      background-color: #f1d8a6;
-      transition: background-color 0.3s;
+      background-color: #c69c6d;  /* ベージュのアクセント色 */
+      transition: background-color 0.3s, transform 0.3s;
     }
 
     ul li a:hover {
-      background-color: #d66f4c;
+      background-color: #9b7b53;  /* 濃いベージュ */
+      transform: scale(1.1);
+    }
+
+    /* セクションのタイトル */
+    .section-title {
+      font-size: 1.8em;
+      color: #c69c6d;  /* ベージュ */
+      margin-top: 40px;
+      text-align: center;
+    }
+
+    .content-section {
+      margin-top: 20px;
+      font-size: 1.1em;
+      text-align: center;
+      padding: 15px;
+      background: #f1e1c6;  /* 淡いベージュ背景 */
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      opacity: 0;
+      animation: fadeInSection 1.5s 1.5s forwards; /* セクションのフェードイン */
+    }
+
+    /* 各セクションのフェードインアニメーション */
+    @keyframes fadeInSection {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+
+    /* フォームのスタイル */
+    .contact-form input, .contact-form textarea {
+      padding: 10px;
+      width: 100%;
+      margin: 10px 0;
+      border: 1px solid #c69c6d;  /* ベージュの境界線 */
+      border-radius: 5px;
+    }
+
+    .contact-form button {
+      background-color: #c69c6d;  /* ベージュのボタン */
       color: white;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .contact-form button:hover {
+      background-color: #9b7b53;  /* 濃いベージュ */
     }
 
     footer {
       text-align: center;
-      margin-top: 30px;
+      margin-top: 40px;
       font-size: 0.9em;
       color: #a87d6d;
     }
@@ -97,50 +194,64 @@
         margin-bottom: 10px;
       }
     }
-
-    .section-title {
-      font-size: 1.8em;
-      color: #d66f4c;
-      margin-top: 40px;
-      text-align: center;
-    }
-
-    .content-section {
-      margin-top: 20px;
-      font-size: 1.1em;
-      text-align: center;
-    }
-
-    .contact-form input, .contact-form textarea {
-      padding: 10px;
-      width: 100%;
-      margin: 10px 0;
-      border: 1px solid #d66f4c;
-      border-radius: 5px;
-    }
-
-    .contact-form button {
-      background-color: #d66f4c;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    .contact-form button:hover {
-      background-color: #4e3b31;
-    }
   </style>
 </head>
 <body>
+
+  <!-- 背景アニメーション用 -->
+  <script>
+    let x, y;
+    let circleSize = 50;
+    let speedX = 0;
+    let speedY = 0;
+
+    function setup() {
+      createCanvas(windowWidth, windowHeight);
+      x = width / 2;
+      y = height / 2;
+      noStroke();
+      fill(255, 100, 150, 100);  // 半透明の赤い円
+    }
+
+    function draw() {
+      background(245, 241, 228); // ベージュ背景
+      ellipse(x, y, circleSize, circleSize);
+      
+      // 円の滑らかな動き
+      x += speedX;
+      y += speedY;
+      
+      if (x > width || x < 0) speedX *= -1;  // 画面の端で反射
+      if (y > height || y < 0) speedY *= -1;  // 画面の端で反射
+    }
+
+    function windowResized() {
+      resizeCanvas(windowWidth, windowHeight);
+    }
+    
+    // キーで動かす速度調整
+    function mousePressed() {
+      speedX = random(-2, 2);
+      speedY = random(-2, 2);
+    }
+  </script>
 
   <main class="container">
     <h1>Kamijo開発記録</h1>
     <img id="profileImage" src="kamijo.png" alt="Kamijoの画像">
 
     <p>こんにちは！Kamijoの開発記録へようこそ。</p>
-    
+
+    <!-- サイトリンクセクション (タイトル下に配置) -->
+    <ul>
+      <li><a href="https://www.google.com/">Google</a></li>
+      <li><a href="https://www.github.com/">GitHub</a></li>
+      <li><a href="https://twitter.com/">Twitter</a></li>
+      <li><a href="file:///Users/tech-girls-camp01/Documents/GitHub/camp-website/guessgame.html">数当てゲーム</a></li>
+      <li><a href="https://kamijooo.github.io/camp-website/uranai.html">運勢占い</a></li>
+      <li><a href="https://kamijooo.github.io/camp-website/pokemon.html">ラッキーポケモンサイト</a></li>
+    </ul>
+
     <!-- 趣味セクション -->
     <div class="content-section">
       <h2 class="section-title">趣味</h2>
@@ -175,15 +286,6 @@
         <button type="submit">送信</button>
       </form>
     </div>
-
-    <!-- リンク -->
-    <ul>
-      <li><a href="https://www.google.com/">Google</a></li>
-      <li><a href="https://www.github.com/">GitHub</a></li>
-      <li><a href="https://twitter.com/">Twitter</a></li>
-      <li><a href="file:///Users/tech-girls-camp01/Documents/GitHub/camp-website/guessgame.html">数当てゲーム</a></li>
-      <li><a href="https://kamijooo.github.io/camp-website/pokemon.html">ラッキーポケモンサイト</a></li>
-    </ul>
   </main>
 
   <footer>
